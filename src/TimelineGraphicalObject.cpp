@@ -27,7 +27,6 @@ void TimelineGraphicalObject::setup(int type, float prevObjEndingTime){
 
 	extendMargin = 20;
 
-	
 	pL.setup(type, beginning, ending);
 }
 

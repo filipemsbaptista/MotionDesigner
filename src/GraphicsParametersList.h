@@ -31,6 +31,7 @@ class GraphicsParametersList : public ofBaseApp{
 		vector<vector<float>> selectionSort(vector<vector<float>> parameters);
 
 		int typeOfScene;
+
 		
 		ofxUICanvas *ddl_gui, *gui; 
 		//ofxUICanvas *paste_gui;

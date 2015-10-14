@@ -278,15 +278,47 @@ void KinectGraphicalScene::setup(int typeOfScene, bool isExplore){
 	case 0:		//Particle System
 		_colorPicker.setup(0);
 
-		param.setup(0);
+		param_General.setup(0);
+		param_Head.setup(0);
+		param_ShoulderL.setup(0);
+		param_ShoulderR.setup(0);
+		param_ElbowL.setup(0);
+		param_ElbowR.setup(0);
+		param_HandL.setup(0);
+		param_HandR.setup(0);
+		param_Torso.setup(0);
+		param_HipL.setup(0);
+		param_HipR.setup(0);
+		param_KneeL.setup(0);
+		param_KneeR.setup(0);
+		param_FootL.setup(0);
+		param_FootR.setup(0);
+
 		trail = 0.7;
 
 		//Set up interface
-		interf.setGUI1(&param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity);
-		interf.setGUI2();
-		interf.setGUI3();
+		jointsSelector.setup();
+	
+		interf.setGUI_Head(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_Neck(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ShoulderL(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ShoulderR(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ElbowL(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ElbowR(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HandL(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HandR(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_Torso(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HipL(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HipR(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_KneeL(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_KneeR(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_FootL(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_FootR(0, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+	
+		interf.setGUIInfo();
+		interf.setGUIFPS();
+	
 		interf.setup(0, exploreVersion);
-
 		break;
 	case 1:		//Joints Draw
 		_colorPicker.setup(1);
@@ -308,31 +340,32 @@ void KinectGraphicalScene::setup(int typeOfScene, bool isExplore){
 		param_FootR.setup(1);
 
 		_lifeTime = 0.9;
-
+		
 		//Set up interface
 		jointsSelector.setup();
 	
-		interf.setGUI_Head(&param_Head.size_JD, &_lifeTime, &param_Head.speed);
-		interf.setGUI_Neck(&param_Neck.size_JD, &_lifeTime, &param_Neck.speed);
-		interf.setGUI_ShoulderL(&param_ShoulderL.size_JD, &_lifeTime, &param_ShoulderL.speed);
-		interf.setGUI_ShoulderR(&param_ShoulderR.size_JD, &_lifeTime, &param_ShoulderR.speed);
-		interf.setGUI_ElbowL(&param_ElbowL.size_JD, &_lifeTime, &param_ElbowL.speed);
-		interf.setGUI_ElbowR(&param_ElbowR.size_JD, &_lifeTime, &param_ElbowR.speed);
-		interf.setGUI_HandL(&param_HandL.size_JD, &_lifeTime, &param_HandL.speed);
-		interf.setGUI_HandR(&param_HandR.size_JD, &_lifeTime, &param_HandR.speed);
-		interf.setGUI_Torso(&param_Torso.size_JD, &_lifeTime, &param_Torso.speed);
-		interf.setGUI_HipL(&param_HipL.size_JD, &_lifeTime, &param_HipL.speed);
-		interf.setGUI_HipR(&param_HipR.size_JD, &_lifeTime, &param_HipR.speed);
-		interf.setGUI_KneeL(&param_KneeL.size_JD, &_lifeTime, &param_KneeL.speed);
-		interf.setGUI_KneeR(&param_KneeR.size_JD, &_lifeTime, &param_KneeR.speed);
-		interf.setGUI_FootL(&param_FootL.size_JD, &_lifeTime, &param_FootL.speed);
-		interf.setGUI_FootR(&param_FootR.size_JD, &_lifeTime, &param_FootR.speed);
-
+		interf.setGUI_Head(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_Neck(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ShoulderL(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ShoulderR(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ElbowL(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_ElbowR(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HandL(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HandR(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_Torso(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HipL(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_HipR(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_KneeL(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_KneeR(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_FootL(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+		interf.setGUI_FootR(1, &param.force, &param.size_PS, &param.lifeTime_PS, &trail, &param.rotate, &param.eRad, &param.bornRate, &param.velRad, &param.Zintensity, &param_Head.size_JD, &_lifeTime, &param_Head.speed);
+	
 		interf.setGUIInfo();
 		interf.setGUIFPS();
+	
 		interf.setup(1, exploreVersion);
 
-		
+
 		//Set up brushes
 		for (int i = 0; i< nBrushes; i++){
 			Brush newB;
@@ -344,6 +377,7 @@ void KinectGraphicalScene::setup(int typeOfScene, bool isExplore){
 
 		break;
 	}
+
 	// ----------------------------------------
 
 	//NiTE
@@ -359,14 +393,7 @@ void KinectGraphicalScene::setup(int typeOfScene, bool isExplore){
 	printf("\nStart moving around to get detected...\n");
 
 	drawSkeleton = false;
-	switch(sceneType){
-	case 0:
-		drawInterface = interf.gui3->isVisible();
-		break;
-	case 1:
-		drawInterface = interf.guiFPS->isVisible();
-		break;
-	}
+	drawInterface = interf.guiFPS->isVisible();
 }
 
 void KinectGraphicalScene::update(){
@@ -450,23 +477,23 @@ void KinectGraphicalScene::update(){
 				
 				const nite::Point3f center = user.getCenterOfMass();
 
-		/*0*/	headPos = ofPoint(head.getPosition().x + ofGetWidth()/2, -(head.getPosition().y - ofGetHeight()/2), -head.getPosition().z/param.Zintensity);
-		/*1*/	neckPos = ofPoint(neck.getPosition().x + ofGetWidth()/2, -(neck.getPosition().y - ofGetHeight()/2), -neck.getPosition().z/param.Zintensity);
-		/*2*/	handLPos = ofPoint(handL.getPosition().x + ofGetWidth()/2, -(handL.getPosition().y - ofGetHeight()/2), -handL.getPosition().z/param.Zintensity);
-		/*3*/	elbowLPos = ofPoint(elbowL.getPosition().x + ofGetWidth()/2, -(elbowL.getPosition().y - ofGetHeight()/2), -elbowL.getPosition().z/param.Zintensity);
-		/*4*/	handRPos = ofPoint(handR.getPosition().x + ofGetWidth()/2, -(handR.getPosition().y - ofGetHeight()/2), -handR.getPosition().z/param.Zintensity);
-		/*5*/	elbowRPos = ofPoint(elbowR.getPosition().x + ofGetWidth()/2, -(elbowR.getPosition().y - ofGetHeight()/2), -elbowR.getPosition().z/param.Zintensity);
-		/*6*/	shoulderLPos = ofPoint(shoulderL.getPosition().x + ofGetWidth()/2, -(shoulderL.getPosition().y - ofGetHeight()/2), -shoulderL.getPosition().z/param.Zintensity);
-		/*7*/	shoulderRPos = ofPoint(shoulderR.getPosition().x + ofGetWidth()/2, -(shoulderR.getPosition().y - ofGetHeight()/2), -shoulderR.getPosition().z/param.Zintensity);
-		/*8*/	torsoPos = ofPoint(torso.getPosition().x + ofGetWidth()/2, -(torso.getPosition().y - ofGetHeight()/2), -torso.getPosition().z/param.Zintensity);
-		/*9*/	hipLPos = ofPoint(hipL.getPosition().x + ofGetWidth()/2, -(hipL.getPosition().y - ofGetHeight()/2), -hipL.getPosition().z/param.Zintensity);
-		/*10*/	hipRPos = ofPoint(hipR.getPosition().x + ofGetWidth()/2, -(hipR.getPosition().y - ofGetHeight()/2), -hipR.getPosition().z/param.Zintensity);
-		/*11*/	kneeLPos = ofPoint(kneeL.getPosition().x + ofGetWidth()/2, -(kneeL.getPosition().y - ofGetHeight()/2), -kneeL.getPosition().z/param.Zintensity);
-		/*12*/	kneeRPos = ofPoint(kneeR.getPosition().x + ofGetWidth()/2, -(kneeR.getPosition().y - ofGetHeight()/2), -kneeR.getPosition().z/param.Zintensity);
-		/*13*/	footLPos = ofPoint(footL.getPosition().x + ofGetWidth()/2, -(footL.getPosition().y - ofGetHeight()/2), -footL.getPosition().z/param.Zintensity);
-		/*14*/	footRPos = ofPoint(footR.getPosition().x + ofGetWidth()/2, -(footR.getPosition().y - ofGetHeight()/2), -footR.getPosition().z/param.Zintensity);
+		/*0*/	headPos = ofPoint((head.getPosition().x - ofGetWidth()/3)*-1, -(head.getPosition().y - ofGetHeight()/2), -head.getPosition().z/param.Zintensity);
+		/*1*/	neckPos = ofPoint((neck.getPosition().x - ofGetWidth()/3)*-1, -(neck.getPosition().y - ofGetHeight()/2), -neck.getPosition().z/param.Zintensity);
+		/*2*/	handLPos = ofPoint((handL.getPosition().x - ofGetWidth()/3)*-1, -(handL.getPosition().y - ofGetHeight()/2), -handL.getPosition().z/param.Zintensity);
+		/*3*/	elbowLPos = ofPoint((elbowL.getPosition().x - ofGetWidth()/3)*-1, -(elbowL.getPosition().y - ofGetHeight()/2), -elbowL.getPosition().z/param.Zintensity);
+		/*4*/	handRPos = ofPoint((handR.getPosition().x - ofGetWidth()/3)*-1, -(handR.getPosition().y - ofGetHeight()/2), -handR.getPosition().z/param.Zintensity);
+		/*5*/	elbowRPos = ofPoint((elbowR.getPosition().x - ofGetWidth()/3)*-1, -(elbowR.getPosition().y - ofGetHeight()/2), -elbowR.getPosition().z/param.Zintensity);
+		/*6*/	shoulderLPos = ofPoint((shoulderL.getPosition().x - ofGetWidth()/3)*-1, -(shoulderL.getPosition().y - ofGetHeight()/2), -shoulderL.getPosition().z/param.Zintensity);
+		/*7*/	shoulderRPos = ofPoint((shoulderR.getPosition().x - ofGetWidth()/3)*-1, -(shoulderR.getPosition().y - ofGetHeight()/2), -shoulderR.getPosition().z/param.Zintensity);
+		/*8*/	torsoPos = ofPoint((torso.getPosition().x - ofGetWidth()/3)*-1, -(torso.getPosition().y - ofGetHeight()/2), -torso.getPosition().z/param.Zintensity);
+		/*9*/	hipLPos = ofPoint((hipL.getPosition().x - ofGetWidth()/3)*-1, -(hipL.getPosition().y - ofGetHeight()/2), -hipL.getPosition().z/param.Zintensity);
+		/*10*/	hipRPos = ofPoint((hipR.getPosition().x - ofGetWidth()/3)*-1, -(hipR.getPosition().y - ofGetHeight()/2), -hipR.getPosition().z/param.Zintensity);
+		/*11*/	kneeLPos = ofPoint((kneeL.getPosition().x - ofGetWidth()/3)*-1, -(kneeL.getPosition().y - ofGetHeight()/2), -kneeL.getPosition().z/param.Zintensity);
+		/*12*/	kneeRPos = ofPoint((kneeR.getPosition().x - ofGetWidth()/3)*-1, -(kneeR.getPosition().y - ofGetHeight()/2), -kneeR.getPosition().z/param.Zintensity);
+		/*13*/	footLPos = ofPoint((footL.getPosition().x - ofGetWidth()/3)*-1, -(footL.getPosition().y - ofGetHeight()/2), -footL.getPosition().z/param.Zintensity);
+		/*14*/	footRPos = ofPoint((footR.getPosition().x - ofGetWidth()/3)*-1, -(footR.getPosition().y - ofGetHeight()/2), -footR.getPosition().z/param.Zintensity);
 
-				centerPos = ofPoint(center.x + ofGetWidth()/2, -(center.y - ofGetHeight()/2), -center.z/param.Zintensity);
+				centerPos = ofPoint((center.x  - ofGetWidth()/3)*-1, -(center.y - ofGetHeight()/2), -center.z/param.Zintensity);
 
 				param.eCenter = centerPos;
 
@@ -585,23 +612,23 @@ void KinectGraphicalScene::update(){
 				const nite::Point3f center = user.getCenterOfMass();
 				float Zintensity = 2;
 
-		/*0*/	headPos = ofPoint(head.getPosition().x + ofGetWidth()/2, -(head.getPosition().y - ofGetHeight()/2), -head.getPosition().z/Zintensity);
-		/*1*/	neckPos = ofPoint(neck.getPosition().x + ofGetWidth()/2, -(neck.getPosition().y - ofGetHeight()/2), -neck.getPosition().z/Zintensity);
-		/*2*/	handLPos = ofPoint(handL.getPosition().x + ofGetWidth()/2, -(handL.getPosition().y - ofGetHeight()/2), -handL.getPosition().z/Zintensity);
-		/*3*/	elbowLPos = ofPoint(elbowL.getPosition().x + ofGetWidth()/2, -(elbowL.getPosition().y - ofGetHeight()/2), -elbowL.getPosition().z/Zintensity);
-		/*4*/	handRPos = ofPoint(handR.getPosition().x + ofGetWidth()/2, -(handR.getPosition().y - ofGetHeight()/2), -handR.getPosition().z/Zintensity);
-		/*5*/	elbowRPos = ofPoint(elbowR.getPosition().x + ofGetWidth()/2, -(elbowR.getPosition().y - ofGetHeight()/2), -elbowR.getPosition().z/Zintensity);
-		/*6*/	shoulderLPos = ofPoint(shoulderL.getPosition().x + ofGetWidth()/2, -(shoulderL.getPosition().y - ofGetHeight()/2), -shoulderL.getPosition().z/Zintensity);
-		/*7*/	shoulderRPos = ofPoint(shoulderR.getPosition().x + ofGetWidth()/2, -(shoulderR.getPosition().y - ofGetHeight()/2), -shoulderR.getPosition().z/Zintensity);
-		/*8*/	torsoPos = ofPoint(torso.getPosition().x + ofGetWidth()/2, -(torso.getPosition().y - ofGetHeight()/2), -torso.getPosition().z/Zintensity);
-		/*9*/	hipLPos = ofPoint(hipL.getPosition().x + ofGetWidth()/2, -(hipL.getPosition().y - ofGetHeight()/2), -hipL.getPosition().z/Zintensity);
-		/*10*/	hipRPos = ofPoint(hipR.getPosition().x + ofGetWidth()/2, -(hipR.getPosition().y - ofGetHeight()/2), -hipR.getPosition().z/Zintensity);
-		/*11*/	kneeLPos = ofPoint(kneeL.getPosition().x + ofGetWidth()/2, -(kneeL.getPosition().y - ofGetHeight()/2), -kneeL.getPosition().z/Zintensity);
-		/*12*/	kneeRPos = ofPoint(kneeR.getPosition().x + ofGetWidth()/2, -(kneeR.getPosition().y - ofGetHeight()/2), -kneeR.getPosition().z/Zintensity);
-		/*13*/	footLPos = ofPoint(footL.getPosition().x + ofGetWidth()/2, -(footL.getPosition().y - ofGetHeight()/2), -footL.getPosition().z/Zintensity);
-		/*14*/	footRPos = ofPoint(footR.getPosition().x + ofGetWidth()/2, -(footR.getPosition().y - ofGetHeight()/2), -footR.getPosition().z/Zintensity);
+		/*0*/	headPos = ofPoint(-head.getPosition().x + ofGetWidth()/2, -(head.getPosition().y - ofGetHeight()/2), -head.getPosition().z/Zintensity);
+		/*1*/	neckPos = ofPoint(-neck.getPosition().x + ofGetWidth()/2, -(neck.getPosition().y - ofGetHeight()/2), -neck.getPosition().z/Zintensity);
+		/*2*/	handLPos = ofPoint(-handL.getPosition().x + ofGetWidth()/2, -(handL.getPosition().y - ofGetHeight()/2), -handL.getPosition().z/Zintensity);
+		/*3*/	elbowLPos = ofPoint(-elbowL.getPosition().x + ofGetWidth()/2, -(elbowL.getPosition().y - ofGetHeight()/2), -elbowL.getPosition().z/Zintensity);
+		/*4*/	handRPos = ofPoint(-handR.getPosition().x + ofGetWidth()/2, -(handR.getPosition().y - ofGetHeight()/2), -handR.getPosition().z/Zintensity);
+		/*5*/	elbowRPos = ofPoint(-elbowR.getPosition().x + ofGetWidth()/2, -(elbowR.getPosition().y - ofGetHeight()/2), -elbowR.getPosition().z/Zintensity);
+		/*6*/	shoulderLPos = ofPoint(-shoulderL.getPosition().x + ofGetWidth()/2, -(shoulderL.getPosition().y - ofGetHeight()/2), -shoulderL.getPosition().z/Zintensity);
+		/*7*/	shoulderRPos = ofPoint(-shoulderR.getPosition().x + ofGetWidth()/2, -(shoulderR.getPosition().y - ofGetHeight()/2), -shoulderR.getPosition().z/Zintensity);
+		/*8*/	torsoPos = ofPoint(-torso.getPosition().x + ofGetWidth()/2, -(torso.getPosition().y - ofGetHeight()/2), -torso.getPosition().z/Zintensity);
+		/*9*/	hipLPos = ofPoint(-hipL.getPosition().x + ofGetWidth()/2, -(hipL.getPosition().y - ofGetHeight()/2), -hipL.getPosition().z/Zintensity);
+		/*10*/	hipRPos = ofPoint(-hipR.getPosition().x + ofGetWidth()/2, -(hipR.getPosition().y - ofGetHeight()/2), -hipR.getPosition().z/Zintensity);
+		/*11*/	kneeLPos = ofPoint(-kneeL.getPosition().x + ofGetWidth()/2, -(kneeL.getPosition().y - ofGetHeight()/2), -kneeL.getPosition().z/Zintensity);
+		/*12*/	kneeRPos = ofPoint(-kneeR.getPosition().x + ofGetWidth()/2, -(kneeR.getPosition().y - ofGetHeight()/2), -kneeR.getPosition().z/Zintensity);
+		/*13*/	footLPos = ofPoint(-footL.getPosition().x + ofGetWidth()/2, -(footL.getPosition().y - ofGetHeight()/2), -footL.getPosition().z/Zintensity);
+		/*14*/	footRPos = ofPoint(-footR.getPosition().x + ofGetWidth()/2, -(footR.getPosition().y - ofGetHeight()/2), -footR.getPosition().z/Zintensity);
 
-				centerPos = ofPoint(center.x + ofGetWidth()/2, -(center.y - ofGetHeight()/2), center.z);
+				centerPos = ofPoint(-center.x + ofGetWidth()/2, -(center.y - ofGetHeight()/2), center.z);
 
 				
 				for (int i = 0; i < _brushes.size(); i++){
@@ -697,31 +724,20 @@ void KinectGraphicalScene::update(){
 	}
 	//------------------------------------------------
 
-	switch(sceneType){
-	case 0:
-		_colorPicker.update();
-		break;
-	case 1:
-		printf ("\nUpdating Joints Draw interface ...\n");
+	//Update interface
+	interf.update(jointsSelector.jointSelected);
 
-		//Update interface
-		interf.update(jointsSelector.jointSelected);
-
-		jointsSelector.update(interf.isActive_Head, interf.isActive_Neck, interf.isActive_ShoulderL, interf.isActive_ShoulderR, interf.isActive_ElbowL, interf.isActive_ElbowR, interf.isActive_HandL, interf.isActive_HandR,
-			interf.isActive_Torso, interf.isActive_HipL, interf.isActive_HipR, interf.isActive_KneeL, interf.isActive_KneeR, interf.isActive_FootL, interf.isActive_FootR);
+	jointsSelector.update(interf.isActive_Head, interf.isActive_Neck, interf.isActive_ShoulderL, interf.isActive_ShoulderR, interf.isActive_ElbowL, interf.isActive_ElbowR, interf.isActive_HandL, interf.isActive_HandR,
+		interf.isActive_Torso, interf.isActive_HipL, interf.isActive_HipR, interf.isActive_KneeL, interf.isActive_KneeR, interf.isActive_FootL, interf.isActive_FootR);
 	
-		_colorPicker.update();
-		break;
-	}
-
-	printf ("\nEnd of update() !\n\n");
-
+	_colorPicker.update();
 }
 
 void KinectGraphicalScene::draw(){
 	float alpha = 0;
 	switch(sceneType){
 	case 0:		//Particle System
+		printf("	>>  Drawing particles . . .");
 		ofBackgroundGradient(ofColor::gray,ofColor(_colorPicker.getColor1()), OF_GRADIENT_CIRCULAR);
 		
 		//1. Drawing to buffer
@@ -739,10 +755,74 @@ void KinectGraphicalScene::draw(){
 		//Draw the particles
 		ofFill();
 		for (int i = 0; i < particles.size(); i++){
-			particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+			switch (particles[i].getTargetJoint())
+			{
+			case 0:
+				if(jointsSelector.headActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 1: 
+				if(jointsSelector.neckActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 2:
+				if(jointsSelector.shoulderLActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 3: 
+				if(jointsSelector.shoulderRActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 4:
+				if(jointsSelector.elbowLActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 5: 
+				if(jointsSelector.elbowRActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 6:
+				if(jointsSelector.handLActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 7: 
+				if(jointsSelector.handRActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 8:
+				if(jointsSelector.torsoActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 9:
+				if(jointsSelector.hipLActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 10:
+				if(jointsSelector.hipRActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 11: 
+				if(jointsSelector.kneeLActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 12:
+				if(jointsSelector.kneeRActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 13: 
+				if(jointsSelector.footLActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			case 14:
+				if(jointsSelector.footRActivated)		
+					particles[i].draw(_colorPicker.getColor3(), _colorPicker.getColor2());
+				break;
+			default:
+				break;
+			}
 		}
 		_fbo.end();
-
+		printf("	>>  Finisehd drawing update!");
 	break;
 	
 	case 1:
@@ -847,7 +927,9 @@ void KinectGraphicalScene::draw(){
 	//3. Draw interface on the screen
 	interf.draw();
 	if ( drawInterface ) {	
+		jointsSelector.draw();
 		_colorPicker.draw();
+		
 	}
 
 	if(drawSkeleton){
@@ -954,13 +1036,8 @@ void KinectGraphicalScene::keyReleased(int key){
 }
 
 void KinectGraphicalScene::mouseMoved(int x, int y){
-	switch(sceneType){
-	case 0:
-		break;
-	case 1:
+	if ( drawInterface ) {
 		jointsSelector.mouseMoved(x, y);
-		break;
-	
 	}
 }
 
@@ -976,13 +1053,7 @@ void KinectGraphicalScene::mousePressed(int x, int y){
 void KinectGraphicalScene::mouseReleased(int x, int y){
 	if ( drawInterface ) {
 		_colorPicker.mouseReleased(x, y);
-		switch(sceneType){
-		case 0:
-			break;
-		case 1:
-			jointsSelector.mouseReleased(x, y);
-			break;
-		}
+		jointsSelector.mouseReleased(x, y);
 	}
 }
 

@@ -35,21 +35,21 @@ class Interface : public ofBaseApp{
 		ofxUICanvas *guiInfo, *guiFPS, *guiJoints;
 		ofxUICanvas *gui_Head, *gui_Neck, *gui_ShoulderL, *gui_ShoulderR, *gui_ElbowL, *gui_ElbowR, *gui_HandL, *gui_HandR, *gui_Torso, 
 			*gui_HipL, *gui_HipR, *gui_KneeL, *gui_KneeR, *gui_FootL, *gui_FootR;
-		void setGUI_Head(float *size, float *lifeTime, float *speed),
-			setGUI_Neck(float *size, float *lifeTime, float *speed),
-			setGUI_ShoulderL(float *size, float *lifeTime, float *speed),
-			setGUI_ShoulderR(float *size, float *lifeTime, float *speed),
-			setGUI_ElbowL(float *size, float *lifeTime, float *speed),
-			setGUI_ElbowR(float *size, float *lifeTime, float *speed),
-			setGUI_HandL(float *size, float *lifeTime, float *speed),
-			setGUI_HandR(float *size, float *lifeTime, float *speed),
-			setGUI_Torso(float *size, float *lifeTime, float *speed),
-			setGUI_HipL(float *size, float *lifeTime, float *speed),
-			setGUI_HipR(float *size, float *lifeTime, float *speed),
-			setGUI_KneeL(float *size, float *lifeTime, float *speed),
-			setGUI_KneeR(float *size, float *lifeTime, float *speed),
-			setGUI_FootL(float *size, float *lifeTime, float *speed),
-			setGUI_FootR(float *size, float *lifeTime, float *speed);
+		void setGUI_Head(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_Neck(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_ShoulderL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_ShoulderR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_ElbowL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_ElbowR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_HandL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_HandR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_Torso(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_HipL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_HipR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_KneeL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_KneeR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_FootL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD),
+			setGUI_FootR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD);
 		void setGUIInfo(), setGUIFPS();
 
 		SliderParams sP_Head, sP_Neck, sP_ShoulderL, sP_ShoulderR, sP_ElbowL, sP_ElbowR, sP_HandL, sP_HandR, sP_Torso,

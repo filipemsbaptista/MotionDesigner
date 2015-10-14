@@ -17,7 +17,7 @@ void Params::setup(int sceneType){
 		break;
 	case 1:		//Joints Draw
 		size_JD = 20;
-		speed = 0.1;
+		speed = 0.7;
 		lifeTime_JD = 50.0;
 		drawing = true;
 		break;

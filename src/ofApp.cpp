@@ -1344,11 +1344,11 @@ void ofApp::mouseReleased(int x, int y, int button){
 	if(!exploringPS && !exploringJD && !exploringAudio){
 		
 		if(hoveringLaunchButton && !noScenesOnTimeline){
-    		projectorWindow.setup("Projection", 50, 50, 1024, 768, false);
+			controlWindow.setup("Control", 50, 50, 1024, 768, false);
 			//projectorWindow.setup("Projection", ofGetScreenWidth(), 0, ofGetScreenWidth(), ofGetScreenHeight(), true);
-			controlWindow.setup("Control", 0, 0, ofGetScreenWidth(), ofGetScreenHeight(), false);
+			projectorWindow.setup("Projection", 0, 0, ofGetScreenWidth(), ofGetScreenHeight(), false);
 			
-			sequenceProjection.setup();
+			sequenceProjection.setup(timelineObjects, soundFiles);
 
 			projectingSequence = true;
 		}

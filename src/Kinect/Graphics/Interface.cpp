@@ -10,9 +10,30 @@ void Interface::setup(int typeOfScene, bool isExplore){
 
 	switch(sceneType){
 	case 0:		//Particle System
+		/*
 		gui1->loadSettings("gui1Settings.xml");
 		gui2->loadSettings("gui2Settings.xml");
 		gui3->loadSettings("gui3Settings.xml");	
+		*/
+		guiInfo->loadSettings("guiInfoSettings.xml");
+		guiFPS->loadSettings("guiFPSSettings.xml");
+		gui_Head->loadSettings("gui_HeadSettings.xml");
+		gui_Neck->loadSettings("gui_NeckSettings.xml");
+		gui_ShoulderL->loadSettings("gui_ShoulderLSettings.xml");     
+		gui_ShoulderR->loadSettings("gui_ShoulderRSettings.xml"); 
+		gui_ElbowL->loadSettings("gui_ElbowLSettings.xml");     
+		gui_ElbowR->loadSettings("gui_ElbowRSettings.xml"); 
+		gui_HandL->loadSettings("gui_HandLSettings.xml");     
+		gui_HandR->loadSettings("gui_HandRSettings.xml"); 
+		gui_Torso->loadSettings("gui_TorsoSettings.xml");     
+		gui_HipL->loadSettings("gui_HipLSettings.xml"); 
+		gui_HipR->loadSettings("gui_HipRSettings.xml");     
+		gui_KneeL->loadSettings("gui_KneeLSettings.xml"); 
+		gui_KneeR->loadSettings("gui_KneeRSettings.xml");     
+		gui_FootL->loadSettings("gui_FootLSettings.xml"); 
+		gui_FootR->loadSettings("gui_FootRSettings.xml"); 
+	
+		jointsVisible = true;
 		break;
 	case 1:		//Joints Draw
 		guiInfo->loadSettings("guiInfoSettings.xml");
@@ -42,6 +63,8 @@ void Interface::setup(int typeOfScene, bool isExplore){
 void Interface::update(int jointSelected){
 	switch(sceneType){
 	case 0:		//Particle System
+		selectedJoint = jointSelected;
+		showJointPanel(jointsVisible);
 		break;
 	case 1:		//Joints Draw
 		selectedJoint = jointSelected;
@@ -135,7 +158,7 @@ void Interface::setGUI3(){
 	ofAddListener(gui3->newGUIEvent, this, &Interface::guiEvent); 
 }
 //------------------------------------
-void Interface::setGUI_Head(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_Head(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_Head = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_Head->setDrawWidgetPadding(true);
 	gui_Head->setPosition(5, 5);
@@ -152,16 +175,49 @@ void Interface::setGUI_Head(float *size, float *lifeTime, float *speed){
 	gui_Head->addLabel("1. HEAD:");
 	gui_Head->addLabel("");
 
-	sP_Head.size_JD = size;
-	sP_Head.lifeTime_JD = lifeTime;
-	sP_Head.speed = speed;
-
 	gui_Head->addToggle(" ACTIVE", isActive_Head);
 	gui_Head->addLabel("");
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_Head->addLabel("PARTICLES");
+		gui_Head->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		gui_Head->addLabel("");
+		gui_Head->addLabel("");
+
+		gui_Head->addLabel("EMITTER");
+		gui_Head->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
 		gui_Head->addLabel("BRUSH");
-	gui_Head->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_Head->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_Head->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Head->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_Head->addLabel("");
 	gui_Head->addLabel("");
     gui_Head->addLabelButton("COPY SETTINGS", false);
@@ -173,7 +229,7 @@ void Interface::setGUI_Head(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_Head->newGUIEvent,	 this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_Neck(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_Neck(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_Neck = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_Neck->setDrawWidgetPadding(true);
 	gui_Neck->setPosition(5, 5);
@@ -190,16 +246,50 @@ void Interface::setGUI_Neck(float *size, float *lifeTime, float *speed){
 	gui_Neck->addLabel("2. NECK:");
 	gui_Neck->addLabel("");
 
-	sP_Neck.size_JD = size;
-	sP_Neck.lifeTime_JD = lifeTime;
-	sP_Neck.speed = speed;
-
 	gui_Neck->addToggle(" ACTIVE", isActive_Neck);
 	gui_Neck->addLabel("");
-	gui_Neck->addLabel("BRUSH");
-	gui_Neck->addSlider("Size", 0.0, 100.0, *sP_Neck.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_Neck->addSlider("Trail", 0.0, 1.0, *sP_Neck.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_Neck->addSlider("Drawing Speed", 0, 10, *sP_Neck.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_Neck->addLabel("PARTICLES");
+		gui_Neck->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		gui_Neck->addLabel("");
+		gui_Neck->addLabel("");
+
+		gui_Neck->addLabel("EMITTER");
+		gui_Neck->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_Neck->addLabel("BRUSH");
+		gui_Neck->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Neck->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_Neck->addLabel("");
 	gui_Neck->addLabel("");
     gui_Neck->addLabelButton("COPY SETTINGS", false);
@@ -211,7 +301,7 @@ void Interface::setGUI_Neck(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_Neck->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_ShoulderL(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_ShoulderL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_ShoulderL = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_ShoulderL->setDrawWidgetPadding(true);
 	gui_ShoulderL->setPosition(5, 5);
@@ -228,17 +318,49 @@ void Interface::setGUI_ShoulderL(float *size, float *lifeTime, float *speed){
 	gui_ShoulderL->addLabel("3. LEFT SHOULDER:");
 	gui_ShoulderL->addLabel("");
 
-	sP_ShoulderL.size_JD = size;
-	sP_ShoulderL.lifeTime_JD = lifeTime;
-	sP_ShoulderL.speed = speed;
-
 	gui_ShoulderL->addToggle(" ACTIVE", isActive_ShoulderL);
 	gui_ShoulderL->addLabel("");
+	
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
 
-	gui_ShoulderL->addLabel("BRUSH");
-	gui_ShoulderL->addSlider("Size", 0.0, 100.0, *sP_ShoulderL.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ShoulderL->addSlider("Trail", 0.0, 1.0, *sP_ShoulderL.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ShoulderL->addSlider("Drawing Speed", 0, 10, *sP_ShoulderL.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addLabel("PARTICLES");
+		gui_ShoulderL->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		gui_ShoulderL->addLabel("");
+		gui_ShoulderL->addLabel("");
+
+		gui_ShoulderL->addLabel("EMITTER");
+		gui_ShoulderL->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_ShoulderL->addLabel("BRUSH");
+		gui_ShoulderL->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderL->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_ShoulderL->addLabel("");
 	gui_ShoulderL->addLabel("");
     gui_ShoulderL->addLabelButton("COPY SETTINGS", false);
@@ -250,7 +372,7 @@ void Interface::setGUI_ShoulderL(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_ShoulderL->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_ShoulderR(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_ShoulderR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_ShoulderR = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_ShoulderR->setDrawWidgetPadding(true);
 	gui_ShoulderR->setPosition(5, 5);
@@ -267,16 +389,47 @@ void Interface::setGUI_ShoulderR(float *size, float *lifeTime, float *speed){
 	gui_ShoulderR->addLabel("4. RIGHT SHOULDER:");
 	gui_ShoulderR->addLabel("");
 
-	sP_ShoulderR.size_JD = size;
-	sP_ShoulderR.lifeTime_JD = lifeTime;
-	sP_ShoulderR.speed = speed;
-
 	gui_ShoulderR->addToggle(" ACTIVE", isActive_ShoulderR);
 	gui_ShoulderR->addLabel("");
-	gui_ShoulderR->addLabel("BRUSH");
-	gui_ShoulderR->addSlider("Size", 0.0, 100.0, *sP_ShoulderR.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ShoulderR->addSlider("Trail", 0.0, 1.0, *sP_ShoulderR.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ShoulderR->addSlider("Drawing Speed", 0, 10, *sP_ShoulderR.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_ShoulderR->addLabel("PARTICLES");
+		gui_ShoulderR->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addLabel("");
+		gui_ShoulderR->addLabel("");
+		gui_ShoulderR->addLabel("EMITTER");
+		gui_ShoulderR->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_ShoulderR->addLabel("BRUSH");
+		gui_ShoulderR->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ShoulderR->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_ShoulderR->addLabel("");
 	gui_ShoulderR->addLabel("");
     gui_ShoulderR->addLabelButton("COPY SETTINGS", false);
@@ -288,7 +441,7 @@ void Interface::setGUI_ShoulderR(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_ShoulderR->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_ElbowL(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_ElbowL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_ElbowL = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_ElbowL->setDrawWidgetPadding(true);
 	gui_ElbowL->setPosition(5, 5);
@@ -305,16 +458,47 @@ void Interface::setGUI_ElbowL(float *size, float *lifeTime, float *speed){
 	gui_ElbowL->addLabel("5. LEFT ELBOW:");
 	gui_ElbowL->addLabel("");
 
-	sP_ElbowL.size_JD = size;
-	sP_ElbowL.lifeTime_JD = lifeTime;
-	sP_ElbowL.speed = speed;
-
 	gui_ElbowL->addToggle(" ACTIVE", isActive_ElbowL);
 	gui_ElbowL->addLabel("");
-	gui_ElbowL->addLabel("BRUSH");
-	gui_ElbowL->addSlider("Size", 0.0, 100.0, *sP_ElbowL.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ElbowL->addSlider("Trail", 0.0, 1.0, *sP_ElbowL.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ElbowL->addSlider("Drawing Speed", 0, 10, *sP_ElbowL.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+	
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_ElbowL->addLabel("PARTICLES");
+		gui_ElbowL->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addLabel("");
+		gui_ElbowL->addLabel("");
+		gui_ElbowL->addLabel("EMITTER");
+		gui_ElbowL->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_ElbowL->addLabel("BRUSH");
+		gui_ElbowL->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowL->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_ElbowL->addLabel("");
 	gui_ElbowL->addLabel("");
     gui_ElbowL->addLabelButton("COPY SETTINGS", false);
@@ -326,7 +510,7 @@ void Interface::setGUI_ElbowL(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_ElbowL->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_ElbowR(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_ElbowR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_ElbowR = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_ElbowR->setDrawWidgetPadding(true);
 	gui_ElbowR->setPosition(5, 5);
@@ -343,16 +527,47 @@ void Interface::setGUI_ElbowR(float *size, float *lifeTime, float *speed){
 	gui_ElbowR->addLabel("6. RIGHT ELBOW:");
 	gui_ElbowR->addLabel("");
 
-	sP_ElbowR.size_JD = size;
-	sP_ElbowR.lifeTime_JD = lifeTime;
-	sP_ElbowR.speed = speed;
-
 	gui_ElbowR->addToggle(" ACTIVE", isActive_ElbowR);
 	gui_ElbowR->addLabel("");
-	gui_ElbowR->addLabel("BRUSH");
-	gui_ElbowR->addSlider("Size", 0.0, 100.0, *sP_ElbowR.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ElbowR->addSlider("Trail", 0.0, 1.0, *sP_ElbowR.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_ElbowR->addSlider("Drawing Speed", 0, 10, *sP_ElbowR.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+	
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_ElbowR->addLabel("PARTICLES");
+		gui_ElbowR->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addLabel("");
+		gui_ElbowR->addLabel("");
+		gui_ElbowR->addLabel("EMITTER");
+		gui_ElbowR->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_ElbowR->addLabel("BRUSH");
+		gui_ElbowR->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_ElbowR->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_ElbowR->addLabel("");
 	gui_ElbowR->addLabel("");
     gui_ElbowR->addLabelButton("COPY SETTINGS", false);
@@ -364,7 +579,7 @@ void Interface::setGUI_ElbowR(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_ElbowR->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_HandL(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_HandL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_HandL = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_HandL->setDrawWidgetPadding(true);
 	gui_HandL->setPosition(5, 5);
@@ -381,16 +596,47 @@ void Interface::setGUI_HandL(float *size, float *lifeTime, float *speed){
 	gui_HandL->addLabel("7. LEFT HAND:");
 	gui_HandL->addLabel("");
 
-	sP_HandL.size_JD = size;
-	sP_HandL.lifeTime_JD = lifeTime;
-	sP_HandL.speed = speed;
-
 	gui_HandL->addToggle(" ACTIVE", isActive_HandL);
 	gui_HandL->addLabel("");
-	gui_HandL->addLabel("BRUSH");
-	gui_HandL->addSlider("Size", 0.0, 100.0, *sP_HandL.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HandL->addSlider("Trail", 0.0, 1.0, *sP_HandL.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HandL->addSlider("Drawing Speed", 0, 10, *sP_HandL.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_HandL->addLabel("PARTICLES");
+		gui_HandL->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addLabel("");
+		gui_HandL->addLabel("");
+		gui_HandL->addLabel("EMITTER");
+		gui_HandL->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_HandL->addLabel("BRUSH");
+		gui_HandL->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandL->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_HandL->addLabel("");
 	gui_HandL->addLabel("");
     gui_HandL->addLabelButton("COPY SETTINGS", false);
@@ -402,7 +648,7 @@ void Interface::setGUI_HandL(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_HandL->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_HandR(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_HandR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_HandR = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_HandR->setDrawWidgetPadding(true);
 	gui_HandR->setPosition(5, 5);
@@ -418,17 +664,48 @@ void Interface::setGUI_HandR(float *size, float *lifeTime, float *speed){
 
 	gui_HandR->addLabel("8. LEFT HAND:");
 	gui_HandR->addLabel("");
-
-	sP_HandR.size_JD = size;
-	sP_HandR.lifeTime_JD = lifeTime;
-	sP_HandR.speed = speed;
-
+	
 	gui_HandR->addToggle(" ACTIVE", isActive_HandR);
 	gui_HandR->addLabel("");
-	gui_HandR->addLabel("BRUSH");
-	gui_HandR->addSlider("Size", 0.0, 100.0, *sP_HandR.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HandR->addSlider("Trail", 0.0, 1.0, *sP_HandR.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HandR->addSlider("Drawing Speed", 0, 10, *sP_HandR.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_HandR->addLabel("PARTICLES");
+		gui_HandR->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addLabel("");
+		gui_HandR->addLabel("");
+		gui_HandR->addLabel("EMITTER");
+		gui_HandR->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_HandR->addLabel("BRUSH");
+		gui_HandR->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HandR->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_HandR->addLabel("");
 	gui_HandR->addLabel("");
     gui_HandR->addLabelButton("COPY SETTINGS", false);
@@ -440,7 +717,7 @@ void Interface::setGUI_HandR(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_HandR->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_Torso(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_Torso(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_Torso = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_Torso->setDrawWidgetPadding(true);
 	gui_Torso->setPosition(5, 5);
@@ -457,16 +734,47 @@ void Interface::setGUI_Torso(float *size, float *lifeTime, float *speed){
 	gui_Torso->addLabel("9. TORSO:");
 	gui_Torso->addLabel("");
 
-	sP_Torso.size_JD = size;
-	sP_Torso.lifeTime_JD = lifeTime;
-	sP_Torso.speed = speed;
-
 	gui_Torso->addToggle(" ACTIVE", isActive_Torso);
 	gui_Torso->addLabel("");
-	gui_Torso->addLabel("BRUSH");
-	gui_Torso->addSlider("Size", 0.0, 100.0, *sP_Torso.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_Torso->addSlider("Trail", 0.0, 1.0, *sP_Torso.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_Torso->addSlider("Drawing Speed", 0, 10, *sP_Torso.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+	
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_Torso->addLabel("PARTICLES");
+		gui_Torso->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addLabel("");
+		gui_Torso->addLabel("");
+		gui_Torso->addLabel("EMITTER");
+		gui_Torso->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_Torso->addLabel("BRUSH");
+		gui_Torso->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_Torso->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_Torso->addLabel("");
 	gui_Torso->addLabel("");
     gui_Torso->addLabelButton("COPY SETTINGS", false);
@@ -478,7 +786,7 @@ void Interface::setGUI_Torso(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_Torso->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_HipL(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_HipL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_HipL = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_HipL->setDrawWidgetPadding(true);
 	gui_HipL->setPosition(5, 5);
@@ -495,16 +803,47 @@ void Interface::setGUI_HipL(float *size, float *lifeTime, float *speed){
 	gui_HipL->addLabel("10. LEFT HIP:");
 	gui_HipL->addLabel("");
 
-	sP_HipL.size_JD = size;
-	sP_HipL.lifeTime_JD = lifeTime;
-	sP_HipL.speed = speed;
-
 	gui_HipL->addToggle(" ACTIVE", isActive_HipL);
 	gui_HipL->addLabel("");
-	gui_HipL->addLabel("PARTICLES");
-	gui_HipL->addSlider("Size", 0.0, 100.0, *sP_HipL.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HipL->addSlider("Trail", 0.0, 1.0, *sP_HipL.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HipL->addSlider("Drawing Speed", 0, 10, *sP_HipL.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+	
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_HipL->addLabel("PARTICLES");
+		gui_HipL->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addLabel("");
+		gui_HipL->addLabel("");
+		gui_HipL->addLabel("EMITTER");
+		gui_HipL->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_HipL->addLabel("BRUSH");
+		gui_HipL->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipL->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_HipL->addLabel("");
 	gui_HipL->addLabel("");
     gui_HipL->addLabelButton("COPY SETTINGS", false);
@@ -516,7 +855,7 @@ void Interface::setGUI_HipL(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_HipL->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_HipR(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_HipR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_HipR = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_HipR->setDrawWidgetPadding(true);
 	gui_HipR->setPosition(5, 5);
@@ -533,16 +872,47 @@ void Interface::setGUI_HipR(float *size, float *lifeTime, float *speed){
 	gui_HipR->addLabel("11. RIGHT HIP:");
 	gui_HipR->addLabel("");
 
-	sP_HipR.size_JD = size;
-	sP_HipR.lifeTime_JD = lifeTime;
-	sP_HipR.speed = speed;
-
 	gui_HipR->addToggle(" ACTIVE", isActive_HipR);
 	gui_HipR->addLabel("");
-	gui_HipR->addLabel("BRUSH");
-	gui_HipR->addSlider("Size", 0.0, 100.0, *sP_HipR.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HipR->addSlider("Trail", 0.0, 1.0, *sP_HipR.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_HipR->addSlider("Drawing Speed", 0, 10, *sP_HipR.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_HipR->addLabel("PARTICLES");
+		gui_HipR->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addLabel("");
+		gui_HipR->addLabel("");
+		gui_HipR->addLabel("EMITTER");
+		gui_HipR->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_HipR->addLabel("BRUSH");
+		gui_HipR->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_HipR->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_HipR->addLabel("");
 	gui_HipR->addLabel("");
     gui_HipR->addLabelButton("COPY SETTINGS", false);
@@ -554,7 +924,7 @@ void Interface::setGUI_HipR(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_HipR->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_KneeL(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_KneeL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_KneeL = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_KneeL->setDrawWidgetPadding(true);
 	gui_KneeL->setPosition(5, 5);
@@ -571,16 +941,47 @@ void Interface::setGUI_KneeL(float *size, float *lifeTime, float *speed){
 	gui_KneeL->addLabel("12. LEFT KNEE:");
 	gui_KneeL->addLabel("");
 
-	sP_KneeL.size_JD = size;
-	sP_KneeL.lifeTime_JD = lifeTime;
-	sP_KneeL.speed = speed;
-
 	gui_KneeL->addToggle(" ACTIVE", isActive_KneeL);
 	gui_KneeL->addLabel("");
-	gui_KneeL->addLabel("BRUSH");
-	gui_KneeL->addSlider("Size", 0.0, 100.0, *sP_KneeL.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_KneeL->addSlider("Trail", 0.0, 1.0, *sP_KneeL.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_KneeL->addSlider("Drawing Speed", 0, 10, *sP_KneeL.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_KneeL->addLabel("PARTICLES");
+		gui_KneeL->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addLabel("");
+		gui_KneeL->addLabel("");
+		gui_KneeL->addLabel("EMITTER");
+		gui_KneeL->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_KneeL->addLabel("BRUSH");
+		gui_KneeL->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeL->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_KneeL->addLabel("");
 	gui_KneeL->addLabel("");
     gui_KneeL->addLabelButton("COPY SETTINGS", false);
@@ -592,7 +993,7 @@ void Interface::setGUI_KneeL(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_KneeL->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_KneeR(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_KneeR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_KneeR = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_KneeR->setDrawWidgetPadding(true);
 	gui_KneeR->setPosition(5, 5);
@@ -609,16 +1010,47 @@ void Interface::setGUI_KneeR(float *size, float *lifeTime, float *speed){
 	gui_KneeR->addLabel("13. RIGHT KNEE:");
 	gui_KneeR->addLabel("");
 
-	sP_KneeR.size_JD = size;
-	sP_KneeR.lifeTime_JD = lifeTime;
-	sP_KneeR.speed = speed;
-
 	gui_KneeR->addToggle(" ACTIVE", isActive_KneeR);
 	gui_KneeR->addLabel("");
-	gui_KneeR->addLabel("BRUSH");
-	gui_KneeR->addSlider("Size", 0.0, 100.0, *sP_KneeR.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_KneeR->addSlider("Trail", 0.0, 1.0, *sP_KneeR.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_KneeR->addSlider("Drawing Speed", 0, 10, *sP_KneeR.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+	
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_KneeR->addLabel("PARTICLES");
+		gui_KneeR->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addLabel("");
+		gui_KneeR->addLabel("");
+		gui_KneeR->addLabel("EMITTER");
+		gui_KneeR->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_KneeR->addLabel("BRUSH");
+		gui_KneeR->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_KneeR->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_KneeR->addLabel("");
 	gui_KneeR->addLabel("");
     gui_KneeR->addLabelButton("COPY SETTINGS", false);
@@ -630,7 +1062,7 @@ void Interface::setGUI_KneeR(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_KneeR->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_FootL(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_FootL(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_FootL = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_FootL->setDrawWidgetPadding(true);
 	gui_FootL->setPosition(5, 5);
@@ -647,16 +1079,47 @@ void Interface::setGUI_FootL(float *size, float *lifeTime, float *speed){
 	gui_FootL->addLabel("14. LEFT FOOT:");
 	gui_FootL->addLabel("");
 
-	sP_FootL.size_JD = size;
-	sP_FootL.lifeTime_JD = lifeTime;
-	sP_FootL.speed = speed;
-
 	gui_FootL->addToggle(" ACTIVE", isActive_FootL);
 	gui_FootL->addLabel("");
-	gui_FootL->addLabel("BRUSH");
-	gui_FootL->addSlider("Size", 0.0, 100.0, *sP_FootL.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_FootL->addSlider("Trail", 0.0, 1.0, *sP_FootL.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_FootL->addSlider("Drawing Speed", 0, 10, *sP_FootL.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_FootL->addLabel("PARTICLES");
+		gui_FootL->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addLabel("");
+		gui_FootL->addLabel("");
+		gui_FootL->addLabel("EMITTER");
+		gui_FootL->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_FootL->addLabel("BRUSH");
+		gui_FootL->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootL->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_FootL->addLabel("");
 	gui_FootL->addLabel("");
     gui_FootL->addLabelButton("COPY SETTINGS", false);
@@ -668,7 +1131,7 @@ void Interface::setGUI_FootL(float *size, float *lifeTime, float *speed){
 	ofAddListener(gui_FootL->newGUIEvent, this, &Interface::guiEvent); 
 }
 
-void Interface::setGUI_FootR(float *size, float *lifeTime, float *speed){
+void Interface::setGUI_FootR(int sceneType, float *force, float *size, float *lifeTime, float *history, float *rotate, float *eRad, float *bornRate, float *velRad, int *Zintensity, float *sizeJD, float *lifeTimeJD, float *speedJD){
 	gui_FootR = new ofxUISuperCanvas("PARAMETERS:");		//Creates a canvas at (0,0) using the default width	
 	gui_FootR->setDrawWidgetPadding(true);
 	gui_FootR->setPosition(5, 5);
@@ -685,16 +1148,47 @@ void Interface::setGUI_FootR(float *size, float *lifeTime, float *speed){
 	gui_FootR->addLabel("15. RIGHT FOOT:");
 	gui_FootR->addLabel("");
 
-	sP_FootR.size_JD = size;
-	sP_FootR.lifeTime_JD = lifeTime;
-	sP_FootR.speed = speed;
-
 	gui_FootR->addToggle(" ACTIVE", isActive_FootR);
 	gui_FootR->addLabel("");
-	gui_FootR->addLabel("BRUSH");
-	gui_FootR->addSlider("Size", 0.0, 100.0, *sP_FootR.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_FootR->addSlider("Trail", 0.0, 1.0, *sP_FootR.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui_FootR->addSlider("Drawing Speed", 0, 10, *sP_FootR.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+	switch(sceneType){
+	case 0:		//Particle System
+		sP.force = force;
+		sP.size_PS = size;
+		sP.lifeTime_PS = lifeTime;
+		sP.history = history;
+		sP.rotate = rotate;
+		sP.eRad = eRad;
+		sP.bornRate = bornRate;
+		sP.velRad = velRad;
+		sP.Zintesity = Zintensity;
+
+		gui_FootR->addLabel("PARTICLES");
+		gui_FootR->addSlider("Attraction Force", 0.0, 0.5, *sP.force)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Size", 0.0, 30.0, *sP.size_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Life Time", 0.0, 120.0, *sP.lifeTime_PS)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Motion Blur", 0.0, 1.0, *sP.history)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Rotation", -500, 500, *sP.rotate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addLabel("");
+		gui_FootR->addLabel("");
+		gui_FootR->addLabel("EMITTER");
+		gui_FootR->addSlider("Radius", 0.0, 500.0, *sP.eRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Particles Rate", 0.0, 500.0, *sP.bornRate)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Initial Velocity", 0.0, 400.0, *sP.velRad)->setTriggerType(OFX_UI_TRIGGER_ALL);
+
+		break;
+	case 1:		//Joints Draw
+		sP_Head.size_JD = sizeJD;
+		sP_Head.lifeTime_JD = lifeTimeJD;
+		sP_Head.speed = speedJD;
+		
+		gui_FootR->addLabel("BRUSH");
+		gui_FootR->addSlider("Size", 0.0, 100.0, *sP_Head.size_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Trail", 0.0, 1.0, *sP_Head.lifeTime_JD)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		gui_FootR->addSlider("Drawing Speed", 0.0, 1.0, *sP_Head.speed)->setTriggerType(OFX_UI_TRIGGER_ALL);
+		break;
+	}
+
 	gui_FootR->addLabel("");
 	gui_FootR->addLabel("");
     gui_FootR->addLabelButton("COPY SETTINGS", false);
@@ -719,9 +1213,22 @@ void Interface::setGUIInfo(){
 	string textString2 = "SHORTCUT KEYS:\n";
 	guiInfo->addTextArea("textarea", textString2, OFX_UI_FONT_SMALL);
 	guiInfo->addLabel("",1);
-	guiInfo->addLabel("   ENTER - Hide GUIs", OFX_UI_FONT_SMALL);
-	guiInfo->addLabel("",1);
-	guiInfo->addLabel("   R - Reset GUI positions", OFX_UI_FONT_SMALL);
+	switch(sceneType){
+	case 0:
+		guiInfo->addLabel("CTRL - Tracking On/Off", OFX_UI_FONT_SMALL);
+		guiInfo->addLabel("",1);
+		textString = "SPACE - Randomly reset particles position\n";
+		guiInfo->addTextArea("textarea", textString, OFX_UI_FONT_SMALL);
+		guiInfo->addLabel("",1);
+		guiInfo->addLabel("H - Show skeletonr", OFX_UI_FONT_SMALL);
+		break;
+	case 1:
+		guiInfo->addLabel("   ENTER - Hide GUIs", OFX_UI_FONT_SMALL);
+		guiInfo->addLabel("",1);
+		guiInfo->addLabel("   R - Reset GUI positions", OFX_UI_FONT_SMALL);
+		break;
+	}
+
 	guiInfo->addLabel("",1);
 	guiInfo->addLabel("   F1 - Printscreen", OFX_UI_FONT_SMALL);
 
